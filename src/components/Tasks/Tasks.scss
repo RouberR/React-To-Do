@@ -1,0 +1,63 @@
+.tasks {
+  &__title {
+    font-family: "Montserrat", "Roboto";
+    font-weight: bold;
+    font-size: 32px;
+    line-height: 39px;
+    color: #64c4ed;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #f2f2f2;
+
+    img {
+      opacity: 0;
+      margin-left: 15px;
+      cursor: pointer;
+    }
+    &:hover {
+      img {
+        opacity: 1;
+      }
+    }
+  }
+}
+.tasks__items {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  input {
+    margin-left: 15px;
+    border: 0;
+    font-size: 16px;
+    width: 100%;
+  }
+}
+
+.checkbox {
+  input {
+    display: none;
+  }
+
+  label {
+    display: flex;
+    border: 2px solid #e8e8e8;
+    border-radius: 30px;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    align-items: center;
+    transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+    img {
+      position: relative;
+      left: 1px;
+    }
+    &:hover {
+      background-color: rgba(54, 52, 52, 0.103);
+    }
+  }
+
+  input:checked + label {
+    background-color: #4dd599;
+    border-color: #4dd599;
+  }
+}
