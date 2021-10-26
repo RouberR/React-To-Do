@@ -41,10 +41,12 @@ const AddList = ({ colors, onAddList }) => {
       .then(({ data }) => {
         const color = colors.filter((color) => color.id === selectedColor)[0]
           .name;
-        const listObj = { ...data, color: { name: color } };
+        const listObj = {...data, color: { name: color } };
         onAddList(listObj);
         setIsLoading(false);
-      }).finally(() => {
+      }).catch(() => {
+      alert("Ошибка при добавлении списка")
+    }).finally(() => {
         onClickPopup();
         setInputText("");
         setSelectedColor(colors[0].id);

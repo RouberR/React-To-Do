@@ -10,12 +10,14 @@
 }
 
 .todo {
+  
+
   display: flex;
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 750px;
-  height: 530px;
+  width: calc(100vw - 200px);
+  height: calc(100vh - 100px);
   transform: translate(-50%, -50%);
   box-shadow: 1px 2px 20px #d1c4c4;
   border-radius: 10px;
@@ -35,6 +37,9 @@
   &__tasks{
     flex: 1;
     padding: 60px;
+    overflow: auto;
+
+   
   }
 }
 
@@ -60,6 +65,8 @@
   border-radius: 4px;
   padding: 10px 20px;
   cursor: pointer;
+  font-size: 14px;
+ 
 
   &:hover {
     background: darken($color: #4dd599, $amount: 5);
@@ -68,4 +75,25 @@
   &:active {
     background: darken($color: #4dd599, $amount: 10);
   }
+
+  &:disabled{
+    background:rgb(58, 58, 58);
+  }
+
+  &--grey{
+    background:#F4F6F8;
+    color: #444444;
+
+  
+
+    &:hover{
+      background: darken($color: #F4F6F8, $amount: 5);
+    }
+    &:active {
+      background: darken($color: #F4F6F8, $amount: 10);
+    }
+  
+  }
 }
+
+ 

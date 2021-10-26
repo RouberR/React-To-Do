@@ -1,35 +1,48 @@
+import axios from "axios";
+
 import "./Tasks.scss";
 import edit from "../../assets/img/pen.svg";
 import mark from "../../assets/img/mark.svg";
-const Tasks = ({list}) => {
+import AddTasksForm from "./AddTasksForm";
+
+const Tasks = ({ list, onEditTitle, onAddTasks, withoutEmpty }) => {
+  const editTitle = () => {
+    const newTitle = window.prompt("Введите название заголовка", list.name);
+    if (newTitle) {
+      onEditTitle(list.id, newTitle);
+      axios
+        .patch("http://localhost:3001/lists/" + list.id, {
+          name: newTitle,
+        })
+        .catch(() => {
+          alert("Не удалось обновить название списка!");
+        });
+    }
+  };
+
   return (
-      
     <div clasName="tasks">
-      <h2 className="tasks__title">
+      <h2 style={{ color: list.color.hex }} className="tasks__title">
         {list.name}
-        <img src={edit} alt="EditIcon" />
+        <img onClick={editTitle} src={edit} alt="EditIcon" />
       </h2>
 
-     
-        {
-            list.tasks.map((task) => (  
-            <div key = {task.id} className="tasks__items">
+      {!withoutEmpty && !list.tasks.length && (
+        <h2 className="notTasks">Задачи отсутствуют</h2>
+      )}
+      {list.tasks &&
+        list.tasks.map((task) => (
+          <div key={task.id} className="tasks__items">
             <div className="checkbox">
-             <input  id={`task-${task.id}`} type="checkbox" />
-             <label htmlFor={`task-${task.id}`}><img src={mark}/></label>
+              <input id={`task-${task.id}`} type="checkbox" />
+              <label htmlFor={`task-${task.id}`}>
+                <img src={mark} alt="Mark" />
+              </label>
             </div>
-            <input readOnly value={task.text}/>
-            </div>
-            )
-        )
-       
-        }
-
-
-
-
-       
-  
+            <input readOnly value={task.text} />
+          </div>
+        ))}
+      <AddTasksForm list={list} onAddTasks={onAddTasks} />
     </div>
   );
 };

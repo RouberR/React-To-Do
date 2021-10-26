@@ -1,20 +1,34 @@
 import React from "react";
 import axios from "axios";
+import { Route, useHistory, useLocation } from "react-router-dom";
 
 import { AddList, List, Tasks } from "./components";
 
 function App() {
   const [lists, setLists] = React.useState(null);
   const [colors, setColors] = React.useState(null);
+  const [activeItem, setActiveItem] = React.useState(null);
+  let history = useHistory();
 
   React.useEffect(() => {
-    axios.get("http://localhost:3001/lists?_expand=color&_embed=tasks").then(({ data }) => {
-      setLists(data);
-    });
+    axios
+      .get("http://localhost:3001/lists?_expand=color&_embed=tasks")
+      .then(({ data }) => {
+        setLists(data);
+      });
     axios.get("http://localhost:3001/colors").then(({ data }) => {
       setColors(data);
     });
   }, []);
+
+  let location = useLocation();
+  React.useEffect(() => {
+    const listId = location.pathname.split("lists/")[1];
+    if (lists) {
+      const list = lists.find((list) => list.id === Number(listId));
+      setActiveItem(list);
+    }
+  }, [lists, location.pathname]);
 
   const onRemove = (item) => {
     axios.delete("http://localhost:3001/lists/" + item.id).then(() => {
@@ -28,10 +42,36 @@ function App() {
     setLists(newList);
   };
 
+  const onAddTasks = (listId, taskObj) => {
+    const newList = lists.map((item) => {
+      if (item.id === listId) {
+        item.tasks = [...item.tasks, taskObj];
+      }
+      return item;
+    });
+    setLists(newList);
+  };
+
+  const onEditTitle = (id, newTitle) => {
+    const newList = lists.map((item) => {
+      if (item.id === id) {
+        item.name = newTitle;
+      }
+      return item;
+    });
+    setLists(newList);
+  };
+
+  const onClickItem = (item) => {
+    history.push(`/lists/${item.id}`);
+  };
   return (
     <div className="todo">
       <div className="todo__sidebar">
         <List
+          clickItem={() => {
+            history.push(`/`);
+          }}
           items={[
             {
               icon: (
@@ -49,21 +89,47 @@ function App() {
                 </svg>
               ),
               name: "Все задачи",
-              active: true,
+              active: false,
             },
           ]}
         />
 
         {lists ? (
-          <List items={lists} isRemovable={true} onRemove={onRemove} />
+          <List
+            items={lists}
+            isRemovable={true}
+            onRemove={onRemove}
+            clickItem={onClickItem}
+            activeItem={activeItem}
+          />
         ) : (
-          "Загрузка..."
+          <h3>"Загрузка..."</h3>
         )}
         <AddList onAddList={onAddList} colors={colors} />
       </div>
 
       <div className="todo__tasks">
-        {lists && <Tasks list={lists[1]} />}
+        <Route exact path="/">
+          {lists &&
+            lists.map((list) => (
+              <Tasks
+                key={list.id}
+                list={list}
+                onEditTitle={onEditTitle}
+                onAddTasks={onAddTasks}
+                withoutEmpty
+              />
+            ))}
+        </Route>
+        <Route path="/lists/:id" exact>
+          {lists && activeItem && (
+            <Tasks
+              list={activeItem}
+              onEditTitle={onEditTitle}
+              onAddTasks={onAddTasks}
+            />
+          )}
+        </Route>
       </div>
     </div>
   );
