@@ -21,7 +21,7 @@ const AddTasksForm = ({ list, onAddTasks }) => {
       completed: false,
     };
     axios
-      .post("http://localhost:3001/tasks", obj)
+      .post("/tasks", obj)
       .then(({ data }) => {
         onAddTasks(list.id, data);
       })

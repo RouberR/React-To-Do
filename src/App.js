@@ -14,11 +14,11 @@ function App() {
 
   React.useEffect(() => {
     axios
-      .get("http://localhost:3001/lists?_expand=color&_embed=tasks")
+      .get("/lists?_expand=color&_embed=tasks")
       .then(({ data }) => {
         setLists(data);
       });
-    axios.get("http://localhost:3001/colors").then(({ data }) => {
+    axios.get("/colors").then(({ data }) => {
       setColors(data);
     });
   }, []);
@@ -33,7 +33,7 @@ function App() {
   }, [lists, location.pathname]);
 
   const onRemove = (item) => {
-    axios.delete("http://localhost:3001/lists/" + item.id).then(() => {
+    axios.delete("/lists/" + item.id).then(() => {
       const newList = lists.filter((items) => items.id !== item.id);
       setLists(newList);
     });
@@ -49,7 +49,7 @@ function App() {
         return item;
       });
       setLists(newList);
-      axios.delete("http://localhost:3001/tasks/" + taskId).catch(() => {
+      axios.delete("/tasks/" + taskId).catch(() => {
         alert("Не удалось удалить задачу!");
       });
     }
@@ -96,7 +96,7 @@ function App() {
       });
       setLists(newList);
       axios
-        .patch("http://localhost:3001/tasks/" + taskObj.id, {
+        .patch("/tasks/" + taskObj.id, {
           text: newTitle,
         })
         .catch(() => {
@@ -120,7 +120,7 @@ function App() {
     });
     setLists(newList);
     axios
-      .patch("http://localhost:3001/tasks/" + taskId, {
+      .patch("/tasks/" + taskId, {
         completed,
       })
       .catch(() => {
